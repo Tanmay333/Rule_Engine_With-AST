@@ -23,6 +23,12 @@ combine_rules(rules): Takes a list of rule strings and combines them into a sing
 Evaluate Rule:
 
 evaluate_rule(data): Takes a JSON representation of the AST and user attribute data to evaluate eligibility.
+Testing
+Test Cases
+Create individual rules from the examples using create_rule and verify their AST representation.
+Combine the example rules using combine_rules and ensure the resulting AST reflects the combined logic.
+Implement sample JSON data and test evaluate_rule for different scenarios.
+Explore combining additional rules and test the functionality.
 
 
 ## Data Structure
@@ -38,5 +44,6 @@ class Node {
     this.value = value; // Optional value for operand nodes
   }
 }
+
 
 
