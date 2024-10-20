@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rule Engine</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        padding: 20px;
+        background-color: #f4f4f4;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      input[type="text"],
+      textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      button {
+        padding: 10px 20px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #218838;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Rule Engine</h1>
+
+    <!-- Create Rule Form -->
+    <div>
+      <h2>Create a Rule</h2>
+      <form id="create-rule-form" action="/create-rule" method="POST">
+        <label for="rule-definition">Rule Definition (as a string):</label>
+        <textarea
+          id="rule-definition"
+          name="rule"
+          rows="4"
+          placeholder="Enter rule definition"
+        ></textarea>
+        <button type="submit">Create Rule</button>
+      </form>
+    </div>
+
+    <!-- Evaluate Rule Section -->
+    <div>
+      <h2>Evaluate Rule</h2>
+      <label for="rule-input">Rule:</label>
+      <input type="text" id="rule-input" placeholder="Enter rule to evaluate" />
+
+      <label for="data-input">Data (as JSON):</label>
+      <input
+        type="text"
+        id="data-input"
+        placeholder='Enter data as JSON, e.g. {"age": 25}'
+      />
+
+      <button id="evaluate-btn">Evaluate Rule</button>
+    </div>
+
+    <!-- Script to handle the evaluation -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const evaluateBtn = document.getElementById("evaluate-btn");
+        const ruleInput = document.getElementById("rule-input");
+        const dataInput = document.getElementById("data-input");
+
+        // Ensure that the button and inputs exist before adding the event listener
+        if (evaluateBtn && ruleInput && dataInput) {
+          evaluateBtn.addEventListener("click", async function () {
+            const ruleValue = ruleInput.value;
+            const dataValue = dataInput.value;
+
+            if (!ruleValue || !dataValue) {
+              alert("Please provide both rule and data.");
+              return;
+            }
+
+            try {
+              const response = await fetch("/evaluate-rule", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  rule: ruleValue,
+                  data: JSON.parse(dataValue),
+                }),
+              });
+
+              const result = await response.json();
+              if (response.ok) {
+                alert(`Rule Evaluated: ${result.result}`);
+                console.log("Rule Evaluated:", result.result);
+              } else {
+                console.error("Evaluation failed:", result.message);
+              }
+            } catch (error) {
+              console.error("Error:", error);
+            }
+          });
+        } else {
+          console.error("Required elements not found in the DOM");
+        }
+      });
+    </script>
+  </body>
+</html>
